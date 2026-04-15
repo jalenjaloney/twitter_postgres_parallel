@@ -445,7 +445,6 @@ if __name__ == '__main__':
     # NOTE:
     # we reverse sort the filenames because this results in fewer updates to the users table,
     # which prevents excessive dead tuples and autovacuums
-    with connection.begin() as trans:
         for filename in sorted(args.inputs, reverse=True):
             with zipfile.ZipFile(filename, 'r') as archive: 
                 print(datetime.datetime.now(),filename)
