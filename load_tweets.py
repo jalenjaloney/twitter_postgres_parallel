@@ -86,25 +86,20 @@ def insert_tweet(connection,tweet):
     This function cannot be tested with standard python testing tools because it interacts with the db.
     '''
 
-    # skip tweet if it's already inserted
-    sql=sqlalchemy.sql.text('''
-    SELECT id_tweets 
-    FROM tweets
-    WHERE id_tweets = :id_tweets
-    ''')
-    res = connection.execute(sql,{
-        'id_tweets':tweet['id'],
-        })
-    if res.first() is not None:
-        return
-    
-    # Close the implicit transaction from the SELECT above
-    connection.commit()
-
-    # insert tweet within a transaction;
-    # this ensures that a tweet does not get "partially" loaded
     with connection.begin() as trans:
 
+    # skip tweet if it's already inserted
+        sql=sqlalchemy.sql.text('''
+            SELECT id_tweets 
+            FROM tweets
+            WHERE id_tweets = :id_tweets
+        ''')
+        res = connection.execute(sql,{
+            'id_tweets':tweet['id'],
+        })
+        if res.first() is not None:
+            return
+    
         ########################################
         # insert into the users table
         ########################################
